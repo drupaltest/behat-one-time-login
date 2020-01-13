@@ -1,0 +1,19 @@
+{
+    "name": "drupaltest/behat-one-time-login",
+    "description": "Authenticates users through the Drupal one time login mechanism.",
+    "type": "library",
+    "license": "GPL-2.0+",
+    "autoload": {
+        "psr-4": {
+            "DrupalTest\\BehatOneTimeLogin\\": "src"
+        }
+    },
+    "require-dev": {
+        "drupal/coder": "~8.3",
+        "drupal/drupal-extension": "~4.0",
+        "drush/drush": "~10.0",
+        "friends-of-behat/service-container-extension": "~1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

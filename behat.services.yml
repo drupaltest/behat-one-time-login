@@ -1,0 +1,8 @@
+services:
+  drupal.authentication_manager:
+    class: DrupalTest\BehatOneTimeLogin\AuthenticationManager
+    arguments:
+      - "@mink"
+      - "@drupal.user_manager"
+      - %mink.parameters%
+      - %drupal.parameters%
