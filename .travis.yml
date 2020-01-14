@@ -38,10 +38,6 @@ before_install:
   # Remember the Drupal installation path.
   - WEBROOT=$(pwd)/web
 
-  # Download Composer dependencies for core. Skip this for the coding standards
-  # test.
-  - test ${TEST} == "PHP_CodeSniffer" || composer install --working-dir=$WEBROOT
-
   # Start a web server on port 8888 in the background.
   - test ${TEST} == "PHP_CodeSniffer" || nohup php -S localhost:8888 --docroot ${WEBROOT} > /dev/null 2>&1 &
 
