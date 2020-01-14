@@ -27,7 +27,7 @@ before_install:
   - phpenv config-rm xdebug.ini || true
 
   # Download dependencies.
-  - composer install
+  - COMPOSER_MEMORY_LIMIT=-1 composer install
 
   # Create database.
   - mysql -e 'create database behat_one_time_login'

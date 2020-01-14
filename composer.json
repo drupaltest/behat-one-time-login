@@ -10,7 +10,8 @@
         "drupal/core-project-message": "^8.8",
         "drupal/core-recommended": "^8.8",
         "drupal/drupal-extension": "~4.0",
-        "friends-of-behat/service-container-extension": "~1.0"
+        "friends-of-behat/service-container-extension": "~1.0",
+        "zaporylie/composer-drupal-optimizations": "^1.1"
     },
     "require-dev": {
         "drupal/coder": "~8.3",
