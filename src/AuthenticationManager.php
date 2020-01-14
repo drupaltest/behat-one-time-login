@@ -1,22 +1,80 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace DrupalTest\BehatOneTimeLogin;
 
 use Drupal\DrupalExtension\Manager\DrupalAuthenticationManager;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 
 /**
  * Authenticates users through the Drupal one time login mechanism.
+ *
+ * This is based on weitzman/logintrait.
+ *
+ * @see https://gitlab.com/weitzman/logintrait/
  */
-class AuthenticationManager extends DrupalAuthenticationManager {
+class AuthenticationManager extends DrupalAuthenticationManager
+{
 
-  /**
-   * {@inheritdoc}
-   */
-  public function logIn(\stdClass $user) {
-    var_dump(__METHOD__); ob_flush();
-    parent::logIn($user);
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public function logIn(\stdClass $user): void
+    {
+        // Ensure we aren't already logged in.
+        $this->fastLogout();
 
+        $account = user_load_by_mail($user->mail);
+        $url = $this->getOneTimeLoginUrl($account) . '/login';
+        $this->getSession()->visit($url);
+
+        if (!$this->loggedIn()) {
+            if (isset($user->role)) {
+                throw new \Exception(sprintf(
+                    "Unable to determine if logged in because 'log_out' link cannot be found for user '%s' with role " .
+                    "'%s'",
+                    $user->name,
+                    $user->role
+                ));
+            } else {
+                throw new \Exception(sprintf(
+                    "Unable to determine if logged in because 'log_out' link cannot be found for user '%s'",
+                    $user->name
+                ));
+            }
+        }
+
+        $this->userManager->setCurrentUser($user);
+    }
+
+    /**
+     * Generates a unique URL for a user to log in and reset their password.
+     *
+     * The only change here is use of time() instead of REQUEST_TIME.
+     *
+     * @param \Drupal\user\UserInterface $account
+     *   An object containing the user account.
+     *
+     * @return string
+     *   A unique URL that provides a one-time log in for the user, from which
+     *   they can change their password.
+     */
+    protected function getOneTimeLoginUrl(UserInterface $account): string
+    {
+        $timestamp = time();
+        return \Drupal::url(
+            'user.reset',
+            [
+                'uid' => $account->id(),
+                'timestamp' => $timestamp,
+                'hash' => user_pass_rehash($account, $timestamp),
+            ],
+            [
+                'absolute' => true,
+                'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
+            ]
+        );
+    }
 }
