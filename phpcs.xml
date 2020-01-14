@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="behat_one_time_login">
+  <description>PHP CodeSniffer configuration for the Behat One Time Login project.</description>
+  <rule ref="./vendor/drupal/coder/coder_sniffer/Drupal" />
+  <arg name="extensions" value="php"/>
+  <arg name="report" value="full"/>
+  <arg value="p"/>
+  <file>.</file>
+  <exclude-pattern>./vendor</exclude-pattern>
+  <exclude-pattern>./web</exclude-pattern>
+</ruleset>
