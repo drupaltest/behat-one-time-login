@@ -1,0 +1,52 @@
+language: php
+
+php:
+  - 7.2
+  - 7.3
+
+sudo: false
+
+mysql:
+  database: behat_one_time_login
+  username: root
+  encoding: utf8
+
+env:
+  - TEST=PHP_CodeSniffer
+  - TEST=Behat
+
+matrix:
+  # Only run the coding standards check once.
+  exclude:
+    - php: 7.2
+      env: TEST=PHP_CodeSniffer
+
+before_install:
+  # Remove Xdebug as we don't need it. We don't care if that file exists or not
+  # on PHP 7.
+  - phpenv config-rm xdebug.ini || true
+
+  # Download dependencies.
+  - composer install
+
+  # Create database.
+  - mysql -e 'create database behat_one_time_login'
+
+  # Remember the Drupal installation path.
+  - WEBROOT=$(pwd)/web
+
+  # Download Composer dependencies for core. Skip this for the coding standards
+  # test.
+  - test ${TEST} == "PHP_CodeSniffer" || composer install --working-dir=$WEBROOT
+
+  # Start a web server on port 8888 in the background.
+  - test ${TEST} == "PHP_CodeSniffer" || nohup php -S localhost:8888 --docroot ${WEBROOT} > /dev/null 2>&1 &
+
+  # Wait until the web server is responding.
+  - test ${TEST} == "PHP_CodeSniffer" || until curl -s localhost:8888; do true; done > /dev/null
+
+install:
+  # Install Drupal. This is only needed when running Behat tests.
+  - test ${TEST} == "Behat" && ./vendor/bin/drush site-install --root=${WEBROOT} --db-url=mysql://travis:@127.0.0.1/behat_one_time_plugin --yes || true
+
+script: TRAVIS_BUILD_DIR=${TRAVIS_BUILD_DIR} ${TRAVIS_BUILD_DIR}/scripts/travis-ci/run-test.sh ${TEST}
