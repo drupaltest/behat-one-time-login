@@ -26,7 +26,22 @@ class AuthenticationManager extends DrupalAuthenticationManager
         // Ensure we aren't already logged in.
         $this->fastLogout();
 
-        $account = user_load_by_mail($user->mail);
+        $account = $this->getUnchangedUserByEmail($user->mail);
+        if (empty($account)) {
+            if (isset($user->role)) {
+                throw new \Exception(sprintf(
+                    "User '%s' with role '%s' was not found.",
+                    $user->name,
+                    $user->role
+                ));
+            } else {
+                throw new \Exception(sprintf(
+                    "User '%s' was not found.",
+                    $user->name
+                ));
+            }
+        }
+
         $url = $this->getOneTimeLoginUrl($account) . '/login';
         $this->getSession()->visit($url);
 
@@ -76,5 +91,36 @@ class AuthenticationManager extends DrupalAuthenticationManager
                 'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
             ]
         );
+    }
+
+    /**
+     * Returns the user entity identified by the given email.
+     *
+     * This will get a fresh copy from the database, bypassing the cache.
+     *
+     * @param string $email
+     *   The email address that matches the desired user entity.
+     *
+     * @return \Drupal\user\UserInterface|null
+     *   The user entity, or NULL if the user is not found in the database.
+     *
+     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+     *   Thrown when the user entity plugin definition is invalid.
+     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+     *   Thrown when the user entity type is not defined.
+     */
+    protected function getUnchangedUserByEmail(string $email): ?UserInterface
+    {
+        $result = \Drupal::entityQuery('user')
+          ->condition('mail', $email)
+          ->range(0, 1)
+          ->execute();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        $uid = reset($result);
+        return \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
     }
 }
