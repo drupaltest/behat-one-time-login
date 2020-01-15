@@ -26,7 +26,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
         // Ensure we aren't already logged in.
         $this->fastLogout();
 
-        $account = $this->getUnchangedUserByEmail($user->mail);
+        $account = $this->getUnchangedUser($user->uid);
         if (empty($account)) {
             if (isset($user->role)) {
                 throw new \Exception(sprintf(
@@ -94,12 +94,12 @@ class AuthenticationManager extends DrupalAuthenticationManager
     }
 
     /**
-     * Returns the user entity identified by the given email.
+     * Returns the user entity identified by the given user ID.
      *
      * This will get a fresh copy from the database, bypassing the cache.
      *
-     * @param string $email
-     *   The email address that matches the desired user entity.
+     * @param string $uid
+     *   The user ID.
      *
      * @return \Drupal\user\UserInterface|null
      *   The user entity, or NULL if the user is not found in the database.
@@ -109,18 +109,8 @@ class AuthenticationManager extends DrupalAuthenticationManager
      * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
      *   Thrown when the user entity type is not defined.
      */
-    protected function getUnchangedUserByEmail(string $email): ?UserInterface
+    protected function getUnchangedUser(string $email): ?UserInterface
     {
-        $result = \Drupal::entityQuery('user')
-          ->condition('mail', $email)
-          ->range(0, 1)
-          ->execute();
-
-        if (empty($result)) {
-            return null;
-        }
-
-        $uid = reset($result);
         return \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
     }
 }
