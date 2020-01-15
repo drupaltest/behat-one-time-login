@@ -109,7 +109,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
      * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
      *   Thrown when the user entity type is not defined.
      */
-    protected function getUnchangedUser(string $email): ?UserInterface
+    protected function getUnchangedUser(string $uid): ?UserInterface
     {
         return \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
     }
