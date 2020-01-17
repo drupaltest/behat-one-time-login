@@ -6,7 +6,6 @@ namespace DrupalTest\BehatOneTimeLogin;
 
 use Drupal\Core\Url;
 use Drupal\DrupalExtension\Manager\DrupalAuthenticationManager;
-use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 
 /**
