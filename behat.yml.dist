@@ -6,7 +6,7 @@ default:
         - Drupal\DrupalExtension\Context\MinkContext
   extensions:
     Behat\MinkExtension:
-      base-url: http://localhost:8888
+      base_url: http://localhost:8888
       goutte: ~
     Drupal\DrupalExtension:
       api_driver: 'drupal'
