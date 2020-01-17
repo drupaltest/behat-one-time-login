@@ -112,6 +112,8 @@ class AuthenticationManager extends DrupalAuthenticationManager
      */
     protected function getUnchangedUser(string $uid): ?UserInterface
     {
-        return \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
+        /** @var \Drupal\user\UserInterface $account */
+        $account = \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
+        return $account;
     }
 }
