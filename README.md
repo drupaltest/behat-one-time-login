@@ -33,15 +33,22 @@ Usage
 -----
 
 This transparently replaces the standard login method, so in most cases it can
-be dropped in and used without requiring changes to existing test scenarios. Do
-note that in the standard Drupal login procedure the user ends up on the
+be dropped in and used without requiring changes to existing test scenarios.
+
+Do note that in the standard Drupal login procedure the user ends up on the
 homepage after logging in, and with this library they end up on the user profile
-page. Any tests that expect to be on the homepage after logging in should have
-the following line added after the step that logs in the user:
+page. We do not include a redirection to the homepage since in Behavior Driven
+Development the tests are supposed to be readable by business stakeholders. Non-
+technical users might not know that Drupal internally redirects to the homepage
+after logging in. This means that any tests that are performing actions on the
+homepage should have a step telling the user to open the homepage. For example:
 
 ```
-Given I am on the homepage
+Given I am logged in as an administrator
+And I am on the homepage
 ```
+
+
 Development
 -----------
 
@@ -64,11 +71,16 @@ Running tests locally:
   appropriate configurations in `behat.yml`.
 * Install Drupal:
   ```bash
-  $ cd web
-  $ ../vendor/bin/drush site-install
-  $ cd ..
+  $ ./vendor/bin/drush site-install
   ```
 * Run tests:
  ```bash
  $ ./vendor/bin/behat
  ```
+
+
+ Credits
+ -------
+
+ This is based on [weitzman/logintrait](https://gitlab.com/weitzman/logintrait/)
+ by Moshe Weitzman.

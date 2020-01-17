@@ -4,6 +4,12 @@
     "type": "library",
     "license": "GPL-2.0-or-later",
     "homepage": "https://github.com/drupaltest/behat-one-time-login",
+    "authors": [
+        {
+            "name": "Pieter Frenssen",
+            "role": "Maintainer"
+        }
+    ],
     "require": {
         "drupal/drupal-extension": "~4.0",
         "friends-of-behat/service-container-extension": "~1.0"
