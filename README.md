@@ -42,4 +42,33 @@ the following line added after the step that logs in the user:
 ```
 Given I am on the homepage
 ```
+Development
+-----------
 
+Running tests locally:
+
+* Run `composer install` to get the codebase:
+  ```bash
+  $ composer install
+  ```
+* Create a customized `behat.yml`:
+  ```bash
+  $ cp behat.yml.dist behat.yml
+  ```
+* Adapt the values in `behat.yml` to your needs. You can keep the default Behat
+  config and test using the PHP built-in web-server:
+  ```bash
+  $ ./vendor/bin/drush runserver 8888
+  ```
+  or use your local web-server if any. In this case, you'll need to set the
+  appropriate configurations in `behat.yml`.
+* Install Drupal:
+  ```bash
+  $ cd web
+  $ ../vendor/bin/drush site-install
+  $ cd ..
+  ```
+* Run tests:
+ ```bash
+ $ ./vendor/bin/behat
+ ```
