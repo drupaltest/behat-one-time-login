@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DrupalTest\BehatOneTimeLogin;
 
+use Drupal\Core\Url;
 use Drupal\DrupalExtension\Manager\DrupalAuthenticationManager;
-use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 
 /**
@@ -79,7 +79,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
     protected function getOneTimeLoginUrl(UserInterface $account): string
     {
         $timestamp = time();
-        return \Drupal::url(
+        return Url::fromRoute(
             'user.reset',
             [
                 'uid' => $account->id(),
@@ -90,7 +90,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
                 'absolute' => true,
                 'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
             ]
-        );
+        )->toString();
     }
 
     /**
@@ -111,6 +111,8 @@ class AuthenticationManager extends DrupalAuthenticationManager
      */
     protected function getUnchangedUser(string $uid): ?UserInterface
     {
-        return \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
+        /** @var \Drupal\user\UserInterface $account */
+        $account = \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
+        return $account;
     }
 }

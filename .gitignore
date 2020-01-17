@@ -1,5 +1,6 @@
 /.editorconfig
 /.gitattributes
+/behat.yml
 /composer.lock
 /vendor/
 /web/

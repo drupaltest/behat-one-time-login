@@ -7,7 +7,7 @@ case "$1" in
         exit $?
         ;;
     Behat)
-        ./vendor/bin/behat --verbose features/
+        ./vendor/bin/behat --config=./behat.yml.dist --verbose features/
         exit $?
         ;;
     *)
