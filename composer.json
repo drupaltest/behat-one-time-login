@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "drupal/drupal-extension": "~4.0",
+        "drupal/drupal-extension": "dev-master",
         "friends-of-behat/service-container-extension": "~1.0"
     },
     "require-dev": {
