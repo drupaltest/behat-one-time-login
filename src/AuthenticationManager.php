@@ -26,7 +26,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
         // Ensure we aren't already logged in.
         $this->fastLogout();
 
-        $account = $this->getUnchangedUser($user->uid);
+        $account = $this->getUnchangedUser((int) $user->uid);
         if (empty($account)) {
             if (isset($user->role)) {
                 throw new \Exception(sprintf(
@@ -98,7 +98,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
      *
      * This will get a fresh copy from the database, bypassing the cache.
      *
-     * @param string $uid
+     * @param int $uid
      *   The user ID.
      *
      * @return \Drupal\user\UserInterface|null
@@ -109,7 +109,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
      * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
      *   Thrown when the user entity type is not defined.
      */
-    protected function getUnchangedUser(string $uid): ?UserInterface
+    protected function getUnchangedUser(int $uid): ?UserInterface
     {
         /** @var \Drupal\user\UserInterface $account */
         $account = \Drupal::entityTypeManager()->getStorage('user')->loadUnchanged($uid);
