@@ -3,16 +3,10 @@ language: php
 php:
   - 7.2
   - 7.3
+  - 7.4
 
 services:
   - mysql
-
-sudo: false
-
-mysql:
-  database: behat_one_time_login
-  username: root
-  encoding: utf8
 
 env:
   - TEST=PHP_CodeSniffer
@@ -22,6 +16,8 @@ matrix:
   # Only run the coding standards check once.
   exclude:
     - php: 7.2
+      env: TEST=PHP_CodeSniffer
+    - php: 7.3
       env: TEST=PHP_CodeSniffer
 
 before_install:
