@@ -5,5 +5,5 @@ services:
       - "@mink"
       - "@drupal.user_manager"
       - "@drupal.drupal"
-      - %mink.parameters%
-      - %drupal.parameters%
+      - "%mink.parameters%"
+      - "%drupal.parameters%"
