@@ -89,6 +89,14 @@ class AuthenticationManager extends DrupalAuthenticationManager
             [
                 'absolute' => true,
                 'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
+                // The base URL is derived by the Symfony request handler from
+                // the global variables set by the web server, i.e. REQUEST_URI
+                // or similar. Since Behat tests are run from the command line
+                // this request context is not available and we need to set the
+                // base URL manually.
+                // @todo Remove this workaround once this is fixed in core.
+                // @see https://www.drupal.org/project/drupal/issues/2548095
+                'base_url' => $GLOBALS['base_url'],
             ]
         )->toString();
     }
