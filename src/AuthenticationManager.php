@@ -96,7 +96,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
                 // base URL manually.
                 // @todo Remove this workaround once this is fixed in core.
                 // @see https://www.drupal.org/project/drupal/issues/2548095
-                'base_url' => $GLOBALS['base_url'],
+                'base_url' => $this->getMinkParameter('base_url'),
             ]
         )->toString();
     }
