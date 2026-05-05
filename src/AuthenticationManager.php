@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DrupalTest\BehatOneTimeLogin;
 
 use Drupal\Core\Url;
+use Drupal\Driver\Entity\EntityStubInterface;
 use Drupal\DrupalExtension\Manager\DrupalAuthenticationManager;
 use Drupal\user\UserInterface;
 
@@ -21,7 +22,7 @@ class AuthenticationManager extends DrupalAuthenticationManager
     /**
      * {@inheritdoc}
      */
-    public function logIn(\stdClass $user): void
+    public function logIn(EntityStubInterface $user): void
     {
         // Ensure we aren't already logged in.
         $this->fastLogout();
