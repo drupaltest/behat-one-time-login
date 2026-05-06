@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DrupalTest\BehatOneTimeLogin;
 
 use Drupal\Core\Url;
+use Drupal\Driver\Entity\EntityStubInterface;
 use Drupal\DrupalExtension\Manager\DrupalAuthenticationManager;
 use Drupal\user\UserInterface;
 
@@ -21,23 +22,26 @@ class AuthenticationManager extends DrupalAuthenticationManager
     /**
      * {@inheritdoc}
      */
-    public function logIn(\stdClass $user): void
+    public function logIn(EntityStubInterface $user): void
     {
         // Ensure we aren't already logged in.
         $this->fastLogout();
 
-        $account = $this->getUnchangedUser((int) $user->uid);
-        if (empty($account)) {
-            if (isset($user->role)) {
+        $name = (string) $user->getValue('name');
+        $role = $user->getValue('role');
+
+        $account = $this->getUnchangedUser((int) $user->getValue('uid'));
+        if (!$account instanceof UserInterface) {
+            if ($role !== null) {
                 throw new \Exception(sprintf(
                     "User '%s' with role '%s' was not found.",
-                    $user->name,
-                    $user->role
+                    $name,
+                    $role
                 ));
             } else {
                 throw new \Exception(sprintf(
                     "User '%s' was not found.",
-                    $user->name
+                    $name
                 ));
             }
         }
@@ -46,17 +50,17 @@ class AuthenticationManager extends DrupalAuthenticationManager
         $this->getSession()->visit($url);
 
         if (!$this->loggedIn()) {
-            if (isset($user->role)) {
+            if ($role !== null) {
                 throw new \Exception(sprintf(
                     "Unable to determine if logged in because 'log_out' link cannot be found for user '%s' with role " .
                     "'%s'",
-                    $user->name,
-                    $user->role
+                    $name,
+                    $role
                 ));
             } else {
                 throw new \Exception(sprintf(
                     "Unable to determine if logged in because 'log_out' link cannot be found for user '%s'",
-                    $user->name
+                    $name
                 ));
             }
         }
